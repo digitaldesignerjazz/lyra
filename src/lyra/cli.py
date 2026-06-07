@@ -1,14 +1,12 @@
 """Lyra CLI - Command line interface for running agents and swarms.
 
-Usage examples:
-    lyra --name "Lyra-Prime" --mode single
-    lyra --name "Lyra-Prime" --mode swarm --agents 5 --steps 8
-    python -m lyra.core.agent --name "MyAgent" --mode swarm
+Now with real inter-agent messaging support.
 """
 
 import argparse
 import asyncio
-from typing import List
+import random
+from typing import List, Dict
 
 from lyra.core.agent import LyraAgent
 
@@ -16,7 +14,7 @@ from lyra.core.agent import LyraAgent
 def create_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="lyra",
-        description="Lyra - Self-improving emotional AI agent framework",
+        description="Lyra - Self-improving emotional AI agent framework with messaging",
         epilog="Run agents and swarms. See https://github.com/digitaldesignerjazz/lyra",
     )
     parser.add_argument(
@@ -46,7 +44,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--verbose", "-v",
         action="store_true",
-        help="Enable more detailed output",
+        help="Enable more detailed output and message logging",
     )
     return parser
 
@@ -60,26 +58,58 @@ async def run_single_agent(name: str, steps: int, verbose: bool = False) -> None
 
 
 async def run_swarm(num_agents: int, steps: int, base_name: str = "Lyra", verbose: bool = False) -> None:
-    """Run a simple swarm of LyraAgents concurrently.
+    """Run a swarm of LyraAgents with real inter-agent messaging.
 
-    In this initial implementation, agents run in parallel and occasionally
-    'perceive' a shared swarm event. This demonstrates coordination scaffolding.
+    Agents can now send messages to each other (status, encouragement, questions).
+    Receiving messages influences emotional state.
     """
-    print(f"\n🌐 Starting Lyra Swarm with {num_agents} agents (mode: swarm)\n")
+    print(f"\n🌐 Starting Lyra Swarm with {num_agents} agents + inter-agent messaging\n")
 
     agents: List[LyraAgent] = [
         LyraAgent(name=f"{base_name}-{i+1}") for i in range(num_agents)
     ]
+    name_to_agent: Dict[str, LyraAgent] = {agent.name: agent for agent in agents}
 
-    async def agent_task(agent: LyraAgent, agent_idx: int) -> None:
+    async def agent_task(agent: LyraAgent) -> None:
         for step in range(steps):
-            # Each agent perceives a 'swarm context' occasionally
+            # 1. Process any messages received since last step
+            summaries = await agent.process_inbox()
+            if summaries and verbose:
+                for s in summaries:
+                    print(f"  [{agent.name}] Inbox: {s}")
+
+            # 2. Occasionally perceive swarm context
             if step % 2 == 0:
                 await agent.perceive({
                     "type": "swarm_event",
-                    "from": "swarm_coordinator",
-                    "message": f"Swarm step {step} - agent {agent_idx + 1} checking in",
+                    "step": step,
                 })
+
+            # 3. Occasionally send a message to another agent
+            if step > 0 and random.random() < 0.45:  # ~45% chance per step after first
+                other_agents = [a for a in agents if a.name != agent.name]
+                if other_agents:
+                    target = random.choice(other_agents)
+
+                    if random.random() < 0.5:
+                        msg_type = "status"
+                        content = f"Step {step}: All good here. Curiosity at {agent.emotional_state.curiosity:.2f}"
+                    else:
+                        msg_type = "encouragement"
+                        content = "You're doing great — keep exploring!"
+
+                    message = await agent.send_message(
+                        to=target,
+                        content=content,
+                        msg_type=msg_type,
+                    )
+                    # Deliver the message
+                    await target.receive_message(message)
+
+                    if verbose:
+                        print(f"  [{agent.name}] → [{target.name}] ({msg_type}): {content}")
+
+            # 4. Act + self-improve
             action = await agent.act()
             if verbose:
                 print(f"  [{agent.name}] Step {step+1}: {action.get('action')}")
@@ -89,17 +119,21 @@ async def run_swarm(num_agents: int, steps: int, base_name: str = "Lyra", verbos
                 if verbose:
                     print(f"  [{agent.name}] {improvement}")
 
-            await asyncio.sleep(0.3)
+            await asyncio.sleep(0.35)
 
     # Run all agents concurrently
-    tasks = [agent_task(agent, idx) for idx, agent in enumerate(agents)]
+    tasks = [agent_task(agent) for agent in agents]
     await asyncio.gather(*tasks)
 
     print(f"\n✅ Swarm run complete. {num_agents} agents finished {steps} steps each.\n")
-    print("Emotional states at end:")
+    print("Final emotional states:")
     for agent in agents:
         print(f"  {agent.name}: dominant={agent.emotional_state.dominant_emotion}, "
-              f"curiosity={agent.emotional_state.curiosity:.2f}")
+              f"curiosity={agent.emotional_state.curiosity:.2f}, joy={agent.emotional_state.joy:.2f}")
+
+    # Show total messages exchanged
+    total_messages = sum(len(a.memory.short_term) for a in agents)
+    print(f"\nTotal memory events across swarm: {total_messages}")
 
 
 def main() -> None:

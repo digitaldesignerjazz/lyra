@@ -6,10 +6,16 @@ This module provides the core agent class with:
 - Self-reflection and improvement loops
 - Async task execution
 - Extensibility for swarm, mesh, and chain integration
+
+When run directly (python -m lyra.core.agent), it supports basic --name and --steps.
+For the full featured CLI with --mode swarm, multiple agents, etc. use:
+    lyra --name "Lyra-Prime" --mode swarm
+(or python -m lyra ... after pip install -e .)
 """
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -105,9 +111,18 @@ class LyraAgent(BaseModel):
         print(f"\n=== Agent '{self.name}' run complete. Reflections: {len(self.memory.reflections)} ===\n")
 
 
+# ---------------- CLI support for direct module execution ----------------
+def _parse_args():
+    parser = argparse.ArgumentParser(description="Quick demo runner for LyraAgent (use 'lyra' command for full features)")
+    parser.add_argument("--name", default="Lyra-Prime", help="Agent name")
+    parser.add_argument("--steps", type=int, default=5, help="Number of steps")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
+    args = _parse_args()
     async def demo():
-        agent = LyraAgent(name="Lyra-Prime")
-        await agent.run(steps=4)
+        agent = LyraAgent(name=args.name)
+        await agent.run(steps=args.steps)
 
     asyncio.run(demo())

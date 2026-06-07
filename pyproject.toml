@@ -1,0 +1,54 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lyra"
+version = "0.1.0"
+description = "Lyra - Self-improving emotional AI agent framework with mesh and blockchain integration"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Sven Norman Esslinger", email = "sven@esslinger.example"}
+]
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Distributed Computing",
+    "Topic :: Software Development :: Libraries :: Application Frameworks",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio",
+    "mypy>=1.10",
+    "ruff>=0.4",
+    "pre-commit",
+]
+
+[project.scripts]
+lyra = "lyra.cli:main"  # Placeholder for future CLI
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lyra"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

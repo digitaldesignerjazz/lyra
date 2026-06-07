@@ -1,0 +1,38 @@
+# Lyra - AI Agent Framework Requirements
+# Core dependencies for agent runtime, emotional modeling, configuration, and future mesh/chain integrations.
+# Install with: pip install -r requirements.txt
+# For development: pip install -r requirements.txt -r requirements-dev.txt (when added)
+
+# Data validation & settings (essential for agent configs, emotional states, task schemas)
+pydantic>=2.7,<3.0
+pydantic-settings>=2.0
+
+# Async support & utilities (for agent loops, swarm orchestration)
+anyio>=4.0
+
+# Beautiful terminal output & progress (agent monitoring, CLI, immersive feedback)
+rich>=13.0
+
+# HTTP client for future mesh API calls, external services, or QNET interactions
+httpx>=0.27
+
+# Environment variable management (secrets, API keys, node configs - never commit .env)
+python-dotenv>=1.0
+
+# Enhanced logging (structured logs for agent decisions, self-improvement traces)
+loguru>=0.7
+
+# Optional but recommended for advanced emotional/memory systems
+# numpy>=1.26  # Uncomment for vector embeddings, state math
+# pandas>=2.2   # For structured memory / experience replay
+
+# Development / Testing (move to requirements-dev.txt later)
+# pytest>=8.0
+# pytest-asyncio
+# mypy>=1.10
+# ruff>=0.4
+
+# Future / Conditional
+# torch or transformers for local LLM inference in agents (heavy - use when needed)
+# cryptography for on-chain / secure comms
+# libp2p or yggdrasil-specific bindings when integrating mesh layer

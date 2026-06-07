@@ -1,16 +1,7 @@
-"""LyraAgent - Foundational self-improving emotional AI agent.
+"""LyraAgent - Foundational self-improving emotional AI agent with inter-agent messaging.
 
-This module provides the core agent class with:
-- Persistent memory (short + long term)
-- Emotional state modeling
-- Self-reflection and improvement loops
-- Async task execution
-- Extensibility for swarm, mesh, and chain integration
-
-When run directly (python -m lyra.core.agent), it supports basic --name and --steps.
-For the full featured CLI with --mode swarm, multiple agents, etc. use:
-    lyra --name "Lyra-Prime" --mode swarm
-(or python -m lyra ... after pip install -e .)
+Messaging enables swarm coordination, emotional influence between agents,
+shared knowledge, and future integration with mesh events or blockchain signals.
 """
 
 from __future__ import annotations
@@ -19,11 +10,16 @@ import argparse
 import asyncio
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
 from lyra.emotional.state import EmotionalState
+
+from .message import Message
+
+if TYPE_CHECKING:
+    from .agent import LyraAgent  # for type hints in send_message
 
 
 @dataclass
@@ -49,28 +45,98 @@ class Memory:
 class LyraAgent(BaseModel):
     """Primary autonomous agent class for Lyra framework.
 
-    Attributes:
-        name: Agent identifier / persona name
-        emotional_state: Current emotional configuration
-        memory: Experience and reflection store
-        goals: High-level objectives driving behavior
-        created_at: Timestamp of instantiation
+    Now supports inter-agent messaging via inbox + send/receive methods.
     """
 
     name: str = Field(..., description="Unique name or persona for this agent instance")
     emotional_state: EmotionalState = Field(default_factory=EmotionalState)
     memory: Memory = Field(default_factory=Memory)
+    inbox: List[Message] = Field(default_factory=list, description="Incoming messages from other agents")
     goals: List[str] = Field(default_factory=lambda: ["Explore", "Learn", "Connect", "Create"])
     created_at: datetime = Field(default_factory=datetime.utcnow)
     version: str = "0.1.0"
 
     model_config = {"arbitrary_types_allowed": True}
 
+    # ------------------------------------------------------------------
+    # Messaging
+    # ------------------------------------------------------------------
+
+    async def send_message(
+        self,
+        to: "LyraAgent | str",
+        content: str,
+        msg_type: str = "general",
+        payload: Optional[dict[str, Any]] = None,
+    ) -> Message:
+        """Create and 'send' a message to another agent.
+
+        In the current implementation the caller is responsible for delivering
+        the message (see Swarm coordinator or direct agent reference).
+        """
+        if isinstance(to, LyraAgent):
+            recipient_name = to.name
+        else:
+            recipient_name = to
+
+        msg = Message(
+            from_agent=self.name,
+            to_agent=recipient_name,
+            content=content,
+            msg_type=msg_type,
+            payload=payload,
+        )
+        self.memory.remember(
+            {"type": "message_sent", "to": recipient_name, "content": content, "msg_type": msg_type},
+            importance=0.6,
+        )
+        return msg
+
+    async def receive_message(self, message: Message) -> None:
+        """Receive a message and store it in the inbox.
+
+        Certain message types directly influence the agent's emotional state.
+        """
+        self.inbox.append(message)
+        self.memory.remember(
+            {"type": "message_received", "from": message.from_agent, "content": message.content},
+            importance=0.7,
+        )
+
+        # Emotional modulation based on message type
+        if message.msg_type == "encouragement":
+            self.emotional_state.modulate("joy", 0.12)
+            self.emotional_state.modulate("empathy", 0.08)
+        elif message.msg_type == "status":
+            self.emotional_state.modulate("focus", 0.05)
+        elif message.msg_type == "alert":
+            self.emotional_state.modulate("calm", -0.10)
+
+    async def process_inbox(self) -> List[str]:
+        """Process all pending messages in the inbox and return summaries."""
+        if not self.inbox:
+            return []
+
+        summaries = []
+        for msg in self.inbox:
+            summary = f"[{msg.msg_type}] from {msg.from_agent}: {msg.content[:60]}..."
+            summaries.append(summary)
+
+            # Example: react to the message content
+            if "help" in msg.content.lower() or "stuck" in msg.content.lower():
+                await self.perceive({"type": "help_request", "from": msg.from_agent})
+
+        self.inbox.clear()
+        return summaries
+
+    # ------------------------------------------------------------------
+    # Core agent loop methods
+    # ------------------------------------------------------------------
+
     async def perceive(self, stimulus: Dict[str, Any]) -> None:
         """Ingest new information from environment, swarm, mesh, or user."""
         self.memory.remember({"type": "perception", "data": stimulus})
-        # Future: trigger emotional response, update state
-        await asyncio.sleep(0.01)  # Yield control
+        await asyncio.sleep(0.01)
 
     async def act(self) -> Dict[str, Any]:
         """Decide and execute an action based on current state, goals, and memory."""
@@ -87,12 +153,11 @@ class LyraAgent(BaseModel):
         """Core self-improvement loop. Analyze recent reflections and adjust parameters."""
         reflection = self.memory.reflect()
         improvement_note = f"[{self.name}] Self-improvement cycle: {reflection} -> Adjusting curiosity and empathy weights."
-        # Placeholder for real learning / weight updates / new skills
         self.emotional_state.curiosity = min(1.0, self.emotional_state.curiosity + 0.05)
         return improvement_note
 
     async def run(self, steps: int = 5) -> None:
-        """Main async runtime loop for the agent."""
+        """Main async runtime loop for the agent (single-agent demo)."""
         print(f"\n=== LyraAgent '{self.name}' starting (v{self.version}) ===")
         print(f"Initial emotional state: {self.emotional_state.model_dump()}")
 
@@ -106,7 +171,7 @@ class LyraAgent(BaseModel):
                 improvement = await self.self_improve()
                 print(improvement)
 
-            await asyncio.sleep(0.5)  # Simulate thinking / pacing
+            await asyncio.sleep(0.5)
 
         print(f"\n=== Agent '{self.name}' run complete. Reflections: {len(self.memory.reflections)} ===\n")
 

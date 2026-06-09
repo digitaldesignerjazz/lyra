@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Lyra - Self-improving emotional AI agent framework with mesh networking, blockchain integration, and immersive experiences. Developed by Sven Norman Esslinger.">
+    <title>Lyra • Self-Improving Emotional AI Agents</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        :root {
+            --accent: #6366f1;
+        }
+        
+        body {
+            font-family: 'Inter', system_ui, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Space Grotesk', 'Inter', system_ui, sans-serif;
+            font-weight: 600;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-header {
+            font-size: 2.25rem;
+            line-height: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+        }
+
+        .mesh-bg {
+            background-image: 
+                linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        .nav-scrolled {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(12px);
+        }
+
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        .status-dot {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        .agent-grid {
+            background-image: url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill-rule=%22evenodd%22%3E%3Cpath fill=%22%233b82f620%22 d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-10V8h-2v16h-4v2h4v4h2v-4h4v-2h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 6v-4H4v4H0v2h4v4h2V8h4V6H6z%22/%3E%3C/g%3E%3C/svg%27');
+            background-size: 60px 60px;
+        }
+
+        .terminal {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 border-b border-slate-800 transition-all duration-300">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-x-3">
+                    <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center">
+                        <span class="text-white font-bold text-2xl tracking-tighter">L</span>
+                    </div>
+                    <div>
+                        <span class="font-display text-2xl font-semibold tracking-tighter">Lyra</span>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex items-center gap-x-8 text-sm">
+                    <a href="#features" class="hover:text-indigo-400 transition-colors">Features</a>
+                    <a href="#quickstart" class="hover:text-indigo-400 transition-colors">Quick Start</a>
+                    <a href="#status" class="hover:text-indigo-400 transition-colors">Status</a>
+                    <a href="#roadmap" class="hover:text-indigo-400 transition-colors">Roadmap</a>
+                </div>
+
+                <div class="flex items-center gap-x-3">
+                    <a href="https://github.com/digitaldesignerjazz/lyra" 
+                       target="_blank"
+                       class="inline-flex items-center gap-x-2 px-4 py-2 text-sm font-medium rounded-xl border border-slate-700 hover:bg-slate-900 transition-colors">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://github.com/digitaldesignerjazz/lyra" 
+                       target="_blank"
+                       class="inline-flex items-center gap-x-2 px-5 py-2 text-sm font-semibold bg-white text-slate-950 rounded-xl hover:bg-slate-100 transition-colors">
+                        <span>View Repo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="pt-16 mesh-bg">
+        <div class="max-w-screen-xl mx-auto px-6 pt-20 pb-24">
+            <div class="max-w-4xl">
+                <div class="inline-flex items-center gap-x-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-sm mb-6">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full status-dot"></div>
+                    <span class="text-emerald-400 font-medium">v0.1.0 • Active Development</span>
+                </div>
+
+                <h1 class="text-7xl md:text-8xl font-display font-semibold tracking-tighter leading-none mb-6">
+                    Intelligence.<br>
+                    <span class="gradient-text">Autonomy.</span><br>
+                    Emotion.<br>
+                    <span class="text-slate-400">In the mesh.</span>
+                </h1>
+
+                <p class="max-w-xl text-xl text-slate-400 mb-10">
+                    Lyra is a next-generation framework for building self-improving, emotionally resonant AI agents 
+                    and swarms that operate across decentralized mesh networks, blockchains, and creative domains.
+                </p>
+
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <a href="#quickstart" 
+                       class="inline-flex items-center justify-center gap-x-3 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 transition-all font-semibold rounded-2xl text-lg">
+                        <span>Get Started</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                    
+                    <a href="https://github.com/digitaldesignerjazz/lyra" 
+                       target="_blank"
+                       class="inline-flex items-center justify-center gap-x-3 px-8 py-4 border border-slate-700 hover:bg-slate-900 transition-all font-semibold rounded-2xl text-lg">
+                        <i class="fab fa-github"></i>
+                        <span>Explore on GitHub</span>
+                    </a>
+                </div>
+
+                <div class="mt-8 flex items-center gap-x-6 text-sm text-slate-500">
+                    <div class="flex items-center -space-x-2">
+                        <div class="w-7 h-7 bg-slate-700 rounded-full ring-2 ring-slate-950 flex items-center justify-center text-[10px]">S</div>
+                    </div>
+                    <span>Built by <span class="text-slate-400">Sven Norman Esslinger</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Trust / Tech Bar -->
+    <div class="border-b border-slate-800 bg-slate-900/50">
+        <div class="max-w-screen-xl mx-auto px-6 py-5">
+            <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-sm text-slate-400">
+                <div class="flex items-center gap-x-2">
+                    <i class="fas fa-robot text-indigo-400"></i>
+                    <span>Self-Improving Agents</span>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <i class="fas fa-project-diagram text-indigo-400"></i>
+                    <span>Agent Swarms + Messaging</span>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <i class="fas fa-network-wired text-indigo-400"></i>
+                    <span>Mesh Networking Ready</span>
+                </div>
+                <div class="flex items-center gap-x-2">
+                    <i class="fas fa-link text-indigo-400"></i>
+                    <span>Blockchain Layer</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div id="features" class="max-w-screen-xl mx-auto px-6 pt-20 pb-16">
+        <div class="text-center mb-14">
+            <div class="inline-block px-4 py-1 rounded-full bg-indigo-950 text-indigo-400 text-xs font-semibold tracking-widest mb-4">CAPABILITIES</div>
+            <h2 class="section-header tracking-tighter">Built for autonomous, emotional, <br class="hidden md:block">and decentralized intelligence</h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Feature 1 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-heart text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-3">Emotional Intelligence</h3>
+                <p class="text-slate-400 leading-relaxed">Agents with dynamic emotional states that evolve through interaction, self-reflection, and swarm communication. Joy, curiosity, focus, and empathy influence behavior.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-users text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-3">Agent Swarms & Messaging</h3>
+                <p class="text-slate-400 leading-relaxed">First-class inter-agent messaging enables coordination, emotional influence, shared knowledge, and emergent swarm behavior. Built for scale.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-globe text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-3">Mesh Networking</h3>
+                <p class="text-slate-400 leading-relaxed">Native integration paths for Yggdrasil, NovaNet, QNET and other decentralized mesh protocols. Resilient, private, peer-to-peer communication.</p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-link text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-3">Blockchain & Economy Layer</h3>
+                <p class="text-slate-400 leading-relaxed">Designed for XCoin / QCoin, runes, decentralized identity, and on-chain signaling. Future-proof for agent economies.</p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-sync-alt text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-3">Self-Improvement Loops</h3>
+                <p class="text-slate-400 leading-relaxed">Built-in reflection, memory consolidation, and parameter adjustment. Agents learn and evolve across sessions and interactions.</p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <div class="w-12 h-12 bg-indigo-600/10 text-indigo-400 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-magic text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-semibold tracking-tight mb-3">Creative & Immersive</h3>
+                <p class="text-slate-400 leading-relaxed">Roleplay engines, storytelling, Suno music integration, and long-form interactive experiences. Designed for deep human-AI co-creation.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div id="quickstart" class="bg-slate-900 border-y border-slate-800">
+        <div class="max-w-screen-xl mx-auto px-6 py-20">
+            <div class="grid lg:grid-cols-12 gap-x-16 items-center">
+                <div class="lg:col-span-5 mb-10 lg:mb-0">
+                    <div class="inline-block px-4 py-1 rounded-full bg-emerald-950 text-emerald-400 text-xs font-semibold tracking-widest mb-4">GET STARTED IN SECONDS</div>
+                    <h2 class="section-header tracking-tighter mb-4">Run your first Lyra agent</h2>
+                    <p class="text-lg text-slate-400">The CLI is fully functional today. Launch single agents or coordinated swarms with emotional messaging.</p>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="terminal bg-black border border-slate-800 rounded-3xl p-6 text-sm shadow-inner">
+                        <div class="flex items-center gap-x-2 mb-4 text-emerald-400">
+                            <i class="fas fa-terminal"></i>
+                            <span class="font-mono text-xs tracking-widest">TERMINAL</span>
+                        </div>
+                        <pre class="text-emerald-300 overflow-x-auto"><code>git clone https://github.com/digitaldesignerjazz/lyra.git
+cd lyra
+
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# Run a single agent
+lyra --name "Lyra-Prime" --mode single --steps 8
+
+# Launch an emotional swarm
+lyra --name "Nova" --mode swarm --agents 5 --steps 10 --verbose</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Current Status -->
+    <div id="status" class="max-w-screen-xl mx-auto px-6 pt-20 pb-16">
+        <div class="max-w-2xl mb-12">
+            <div class="inline-block px-4 py-1 rounded-full bg-amber-950 text-amber-400 text-xs font-semibold tracking-widest mb-4">CURRENT STATE</div>
+            <h2 class="section-header tracking-tighter">v0.1.0 — Solid Foundation</h2>
+            <p class="mt-4 text-lg text-slate-400">The core emotional agent runtime, memory system, and inter-agent messaging are already working and demoable.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <h4 class="font-semibold text-lg mb-4 flex items-center gap-x-2">
+                    <i class="fas fa-check-circle text-emerald-400"></i> 
+                    <span>Implemented</span>
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex gap-x-3"><i class="fas fa-check text-emerald-400 mt-1.5 text-sm"></i> <span>Pydantic-based <strong>LyraAgent</strong> with emotional state</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-check text-emerald-400 mt-1.5 text-sm"></i> <span>Tiered memory (short-term, long-term, reflections)</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-check text-emerald-400 mt-1.5 text-sm"></i> <span>Inter-agent messaging with emotional modulation</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-check text-emerald-400 mt-1.5 text-sm"></i> <span>Self-improvement loops</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-check text-emerald-400 mt-1.5 text-sm"></i> <span>Full-featured CLI (single + swarm modes)</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-check text-emerald-400 mt-1.5 text-sm"></i> <span>Modern Python packaging (pyproject.toml + hatch)</span></li>
+                </ul>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-3xl p-8">
+                <h4 class="font-semibold text-lg mb-4 flex items-center gap-x-2">
+                    <i class="fas fa-clock text-amber-400"></i> 
+                    <span>In Progress / Next</span>
+                </h4>
+                <ul class="space-y-3 text-slate-300">
+                    <li class="flex gap-x-3"><i class="fas fa-arrow-right text-amber-400 mt-1.5 text-sm"></i> <span>Persistent memory (SQLite / JSONL)</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-arrow-right text-amber-400 mt-1.5 text-sm"></i> <span>Mesh networking connectors (Yggdrasil / NovaNet)</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-arrow-right text-amber-400 mt-1.5 text-sm"></i> <span>Swarm orchestration layer</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-arrow-right text-amber-400 mt-1.5 text-sm"></i> <span>Creative / roleplay module</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-arrow-right text-amber-400 mt-1.5 text-sm"></i> <span>Rust/egui monitoring dashboard</span></li>
+                    <li class="flex gap-x-3"><i class="fas fa-arrow-right text-amber-400 mt-1.5 text-sm"></i> <span>Tests, docs & examples</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roadmap -->
+    <div id="roadmap" class="bg-slate-900 border-y border-slate-800">
+        <div class="max-w-screen-xl mx-auto px-6 py-20">
+            <div class="text-center mb-12">
+                <div class="inline-block px-4 py-1 rounded-full bg-violet-950 text-violet-400 text-xs font-semibold tracking-widest mb-4">VISION</div>
+                <h2 class="section-header tracking-tighter">The road ahead</h2>
+            </div>
+
+            <div class="max-w-3xl mx-auto space-y-8">
+                <div class="flex gap-6">
+                    <div class="w-9 h-9 flex-shrink-0 bg-violet-600 text-white rounded-2xl flex items-center justify-center font-mono text-sm font-bold">01</div>
+                    <div>
+                        <div class="font-semibold text-lg">Core Agent Runtime v0.2</div>
+                        <div class="text-slate-400">Persistent memory, richer emotional modeling, basic LLM integration option.</div>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="w-9 h-9 flex-shrink-0 bg-violet-600 text-white rounded-2xl flex items-center justify-center font-mono text-sm font-bold">02</div>
+                    <div>
+                        <div class="font-semibold text-lg">Decentralized Connectivity</div>
+                        <div class="text-slate-400">First mesh connectors + QNET / blockchain signaling primitives.</div>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="w-9 h-9 flex-shrink-0 bg-violet-600 text-white rounded-2xl flex items-center justify-center font-mono text-sm font-bold">03</div>
+                    <div>
+                        <div class="font-semibold text-lg">Swarm Intelligence Layer</div>
+                        <div class="text-slate-400">Advanced orchestration, task distribution, and collective reflection.</div>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <div class="w-9 h-9 flex-shrink-0 bg-violet-600 text-white rounded-2xl flex items-center justify-center font-mono text-sm font-bold">04</div>
+                    <div>
+                        <div class="font-semibold text-lg">Hardware & Creative Extensions</div>
+                        <div class="text-slate-400">Rust/egui dashboards + roleplay/story engines + immersive audio support.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Author / CTA -->
+    <div class="max-w-screen-xl mx-auto px-6 py-20">
+        <div class="max-w-2xl mx-auto text-center">
+            <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-violet-500 rounded-2xl flex items-center justify-center mb-6">
+                <span class="text-white text-4xl font-bold">S</span>
+            </div>
+            
+            <h3 class="text-3xl font-semibold tracking-tight mb-3">Built by Sven Norman Esslinger</h3>
+            <p class="text-slate-400 max-w-md mx-auto">Esquire • Nobleman of Senior Squire • MBA<br>
+            Hannover, Germany • <a href="https://x.com/SirLancelotEsq" class="text-indigo-400 hover:underline">@SirLancelotEsq</a></p>
+
+            <div class="mt-8 flex justify-center gap-x-4">
+                <a href="https://github.com/digitaldesignerjazz/lyra" target="_blank"
+                   class="inline-flex items-center gap-x-2 px-6 py-3 bg-white text-slate-950 font-semibold rounded-2xl hover:bg-slate-100 transition-colors">
+                    <i class="fab fa-github"></i>
+                    <span>Contribute on GitHub</span>
+                </a>
+            </div>
+
+            <p class="mt-6 text-xs text-slate-500">Lyra is an open exploratory project. Ideas, code, and feedback are welcome.</p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800 bg-black">
+        <div class="max-w-screen-xl mx-auto px-6 py-10 text-sm text-slate-500 flex flex-col md:flex-row justify-between items-center gap-y-4">
+            <div>
+                © 2026 Sven Norman Esslinger • Lyra Framework
+            </div>
+            <div class="flex items-center gap-x-6">
+                <a href="https://github.com/digitaldesignerjazz/lyra" class="hover:text-slate-300 transition-colors">Repository</a>
+                <a href="https://github.com/digitaldesignerjazz/lyra/blob/main/README.md" class="hover:text-slate-300 transition-colors">Documentation</a>
+                <a href="https://x.com/SirLancelotEsq" class="hover:text-slate-300 transition-colors">X / Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script
+        function initializeTailwind() {
+            document.documentElement.style.setProperty('--accent', '#6366f1');
+        }
+
+        // Navbar scroll effect
+        function initNavbar() {
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 20) {
+                    navbar.classList.add('nav-scrolled', 'shadow-lg');
+                } else {
+                    navbar.classList.remove('nav-scrolled', 'shadow-lg');
+                }
+            });
+        }
+
+        // Smooth scroll for anchor links
+        function initSmoothScroll() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        e.preventDefault();
+                        const offset = 80;
+                        const bodyRect = document.body.getBoundingClientRect().top;
+                        const elementPosition = target.getBoundingClientRect().top;
+                        const offsetPosition = elementPosition - bodyRect - offset;
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Keyboard hint
+        function initKeyboardHint() {
+            document.addEventListener('keydown', function(e) {
+                if (e.key === '/' && document.activeElement.tagName === 'BODY') {
+                    e.preventDefault();
+                    const quickstart = document.getElementById('quickstart');
+                    if (quickstart) quickstart.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        }
+
+        // Boot everything
+        function boot() {
+            initializeTailwind();
+            initNavbar();
+            initSmoothScroll();
+            initKeyboardHint();
+            
+            // Easter egg: click logo to scroll to top
+            const logo = document.querySelector('.fa-heart');
+            if (logo) {
+                logo.parentElement.addEventListener('click', () => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        }
+
+        window.onload = boot;
+    </script>
+</body>
+</html>

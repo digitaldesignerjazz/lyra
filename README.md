@@ -70,11 +70,10 @@ lyra/
 ```bash
 git clone https://github.com/digitaldesignerjazz/lyra.git
 cd lyra
-
 python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-pip install -e .                     # Installs the 'lyra' CLI command + editable package
+source .venv/bin/activate # Windows: .venv\Scripts\activate
+pip install -r requirements.txt # ← Install core dependencies first
+pip install -e . # ← Then install the package in editable mode
 ```
 
 ### Running Lyra

@@ -76,6 +76,72 @@ pip install -r requirements.txt # ← Install core dependencies first
 pip install -e . # ← Then install the package in editable mode
 ```
 
+### Troubleshooting Setup Issues
+
+Here are solutions to the most common problems during installation:
+
+**1. `source .venv/bin/activate` does not work (Windows)**
+
+Use the Windows-specific activation command instead:
+
+```bash
+.venv\Scripts\activate
+```
+
+**2. `pip install -e .` fails with "error: subprocess-exited-with-error" or missing build tools**
+
+Make sure you have the necessary build dependencies:
+
+```bash
+# On Ubuntu/Debian
+sudo apt update && sudo apt install python3-dev build-essential
+
+# On macOS (with Homebrew)
+brew install python
+
+# Then retry
+pip install -e .
+```
+
+**3. `lyra` command not found after `pip install -e .`**
+
+Make sure your virtual environment is activated, then reinstall:
+
+```bash
+pip install -e . --force-reinstall
+```
+
+You can also run it directly without the CLI:
+
+```bash
+python -m lyra.cli --help
+```
+
+**4. Python version error / "requires-python >= 3.11"**
+
+Check your Python version:
+
+```bash
+python --version
+```
+
+If it is older than 3.11, install Python 3.11+ (recommended via [pyenv](https://github.com/pyenv/pyenv) or the official installer).
+
+**5. Permission errors on Linux/macOS**
+
+Try installing with the `--user` flag or use a virtual environment (recommended):
+
+```bash
+pip install -e . --user
+```
+
+**6. `ModuleNotFoundError: No module named 'lyra'`**
+
+You probably forgot to run `pip install -e .` or your virtual environment is not activated.
+
+**Still stuck?**
+Open an issue on GitHub with the exact error message and your operating system + Python version.
+
 ### Running Lyra
 
 ```bash

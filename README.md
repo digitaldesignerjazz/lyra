@@ -65,25 +65,32 @@ lyra/
 - (Optional) Yggdrasil / NovaNet node running locally for real mesh testing
 - Access to blockchain testnets or local QNET node
 
-### Quick Setup
+### Quick Setup (Recommended)
 
 ```bash
 git clone https://github.com/digitaldesignerjazz/lyra.git
 cd lyra
+
 python -m venv .venv
-source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+source .venv/bin/activate          # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+pip install -e .                     # Installs the 'lyra' CLI command + editable package
 ```
 
-### Running an Initial Agent or Swarm
+### Running Lyra
 
 ```bash
-# Single agent
-python -m lyra.core.agent --name "Lyra-Prime" --steps 8
+# Run a single agent
+lyra --name "Lyra-Prime" --mode single --steps 8
 
-# Swarm with inter-agent messaging (emotional influence)
-lyra --mode swarm --agents 4 --steps 10 --verbose
+# Launch an emotional swarm with inter-agent messaging
+lyra --name "Nova" --mode swarm --agents 5 --steps 10 --verbose
 ```
+
+**What these commands do**:
+- `--mode single`: Runs one autonomous `LyraAgent` with memory, emotional state, and self-improvement.
+- `--mode swarm`: Spawns multiple agents that communicate, influence each other’s emotions, and coordinate.
+- `--verbose`: Shows detailed step-by-step output and message passing.
 
 ## Tech Stack & Dependencies
 

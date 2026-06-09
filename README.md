@@ -10,7 +10,7 @@ Lyra represents a next-generation approach to AI agents and swarms, blending:
 
 - **Emotional & Self-Improving Intelligence**: Agents that evolve, feel, and adapt (building on concepts like Ara emotional AI).
 - **Agent Swarms & Orchestration**: Coordinated multi-agent systems for complex tasks, immersive roleplay, creative generation, and real-world problem solving.
-- **Mesh Networking Integration**: Deep ties to decentralized networking (Yggdrasil, xMesh/NovaNet/QNET, Tenda Nova) for resilient, private, peer-to-peer communication.
+- **Mesh Networking Integration**: Deep ties to decentralized networking (Yggdrasil, xMesh/NovaNet/QNET, Tenda Nova) for resilient, private, peer-to-peer communication. **New:** Pluggable `MeshConnector` abstraction with simulated and Yggdrasil transport stubs.
 - **Blockchain & Crypto Layer**: Native support for XCoin/QCoin, QNET, runes, and decentralized identity/economy features.
 - **Hardware & Prototyping**: Low-level control, monitoring, Rust/egui interfaces (inspired by Grok Launcher), sensor integration, and edge deployment.
 - **Creative & Immersive Experiences**: Roleplay engines, storytelling, Suno music integration, fantasy/cyberpunk scenarios, and long-form interactive audio sessions.
@@ -25,31 +25,35 @@ Lyra is designed as both a **research playground** and a **production-ready foun
 - Prototype hardware-accelerated agents and monitoring systems.
 - Explore the boundaries of AI sentience, agency, and human-AI co-creation.
 
-## Project Structure (Proposed)
+## Project Structure (Current)
 
 ```
 lyra/
 ├── README.md
 ├── LICENSE
 ├── .gitignore
-├── docs/
+├── docs/                 # (to be populated)
 │   ├── architecture.md
 │   ├── emotional-ai.md
 │   ├── mesh-integration.md
 │   ├── blockchain-layer.md
 ├── src/
-│   ├── core/               # Core agent runtime, memory, self-improvement loops
-│   ├── agents/             # Individual agent implementations & personalities
-│   ├── swarm/              # Orchestration, coordination, task distribution
-│   ├── mesh/               # Yggdrasil / NovaNet / QNET connectors
-│   ├── chain/              # XCoin/QCoin, QNET, rune integrations
-│   ├── hardware/           # Prototyping, monitoring, Rust/egui UIs
-│   ├── creative/           # Roleplay engines, story generation, music (Suno)
-│   ├── utils/              # Logging, config, crypto primitives
-├── tests/
-├── examples/
+│   ├── lyra/
+│   │   ├── __init__.py
+│   │   ├── cli.py
+│   │   ├── core/           # Agent runtime, memory, messaging, self-improvement
+│   │   ├── emotional/      # EmotionalState modeling & modulation
+│   │   ├── mesh/           # NEW: Pluggable MeshConnector (Simulated + Yggdrasil stubs)
+│   │   ├── swarm/          # (planned)
+│   │   ├── chain/          # (planned)
+│   │   ├── hardware/       # (planned — Rust/egui)
+│   │   ├── creative/       # (planned — roleplay, storytelling)
+│   │   └── utils/
+├── tests/                # (planned)
+├── examples/             # (planned — roleplay swarms, mesh demos)
 ├── scripts/
-└── pyproject.toml or Cargo.toml (multi-language support planned)
+├── pyproject.toml
+└── requirements.txt
 ```
 
 ## Getting Started
@@ -58,7 +62,7 @@ lyra/
 - Python 3.11+ (core) / Rust (for high-performance components & UIs)
 - Docker & Docker Compose (for mesh node testing)
 - Git
-- (Optional) Yggdrasil / NovaNet node running locally
+- (Optional) Yggdrasil / NovaNet node running locally for real mesh testing
 - Access to blockchain testnets or local QNET node
 
 ### Quick Setup
@@ -66,48 +70,86 @@ lyra/
 ```bash
 git clone https://github.com/digitaldesignerjazz/lyra.git
 cd lyra
-# Create virtual environment
 python -m venv .venv
 source .venv/bin/activate  # or .venv\Scripts\activate on Windows
-pip install -r requirements.txt  # (to be added)
+pip install -r requirements.txt
 ```
 
-### Running an Initial Agent
+### Running an Initial Agent or Swarm
 
 ```bash
-python -m lyra.core.agent --name "Lyra-Prime" --mode swarm
-```
+# Single agent
+python -m lyra.core.agent --name "Lyra-Prime" --steps 8
 
-*(Implementation in progress — contributions welcome!)*
+# Swarm with inter-agent messaging (emotional influence)
+lyra --mode swarm --agents 4 --steps 10 --verbose
+```
 
 ## Tech Stack & Dependencies
 
 **Core Languages**:
-- Python (orchestration, agents, high-level logic)
-- Rust (performance-critical paths, egui interfaces, low-level networking)
+- Python (orchestration, agents, high-level logic, mesh abstraction)
+- Rust (performance-critical paths, egui interfaces, low-level networking — see Grok Launcher inspiration)
 - Assembler / low-level where needed for hardware
 
 **Key Technologies**:
 - AI/ML: Custom agent loops, memory systems, emotional modeling
-- Networking: Yggdrasil, libp2p-inspired, custom mesh protocols
-- Blockchain: Custom rune/token logic, QNET integration, decentralized identity
-- UI/UX: egui (Rust), web dashboards, immersive audio interfaces
-- Infra: Docker, monitoring (Prometheus/Grafana style), self-healing systems
+- Networking: Yggdrasil, custom mesh protocols, pluggable `MeshConnector`
+- Blockchain: Custom rune/token logic, QNET integration, decentralized identity (planned)
+- UI/UX: egui (Rust), rich CLI dashboards, immersive audio interfaces
+- Infra: Docker, structured logging (loguru), self-healing patterns
 
-## Current Status
+## Current Status & Recent Progress
 
-**Phase 0: Foundation** (Current)
-- Repository initialized
-- Core architecture design
-- Integration points mapped (mesh + chain + emotional core)
+**Phase 0: Foundation** (Mostly Complete)
+- Repository initialized with professional structure
+- Core `LyraAgent` with tiered memory, inter-agent messaging, and emotional modulation
+- Working CLI for single agents and swarms (with real message passing between agents)
+- Basic emotional state modeling
+- **NEW (June 2026):** `src/lyra/mesh/` package added — pluggable `MeshConnector` abstraction
+  - `SimulatedMeshConnector` for testing & demos (injectable events)
+  - `YggdrasilConnector` stub ready for local node integration (HTTP API / admin socket)
+  - Factory `get_mesh_connector()` and `MeshEvent` / `MeshConfig` models
 
 **Next Milestones**:
-- [ ] Core agent runtime with persistent memory & self-reflection
-- [ ] Basic swarm orchestration
-- [ ] Yggdrasil / NovaNet connector module
-- [ ] Emotional state modeling prototype
+- [x] Core agent runtime with self-reflection & inter-agent messaging
+- [x] Emotional state modeling prototype (with message-driven modulation)
+- [ ] Persistent memory (SQLite / vector store)
+- [ ] Basic swarm orchestration layer
+- [~] Yggdrasil / NovaNet connector module *(stub implemented — real transport next)*
 - [ ] Initial Rust/egui monitoring dashboard (Grok Launcher style)
 - [ ] QCoin / rune integration examples
+- [ ] `examples/` with roleplay swarm scenarios & mesh event perception
+- [ ] Full docs/ (architecture, mesh-integration, emotional-ai)
+
+## Mesh Integration Details (New)
+
+The new `lyra.mesh` module provides a clean abstraction so agents and swarms can:
+
+- Discover peers on decentralized networks
+- Send/receive structured data over the mesh
+- React to mesh events (peer joins, messages, network changes) via `MeshEvent`
+- Influence emotional state or trigger self-improvement from real-world decentralized signals
+
+**Usage example (conceptual):**
+
+```python
+from lyra.mesh import get_mesh_connector, MeshConfig, MeshEvent
+
+config = MeshConfig(transport="simulated")  # or "yggdrasil"
+mesh = get_mesh_connector(config)
+await mesh.connect()
+
+async def on_mesh_event(event: MeshEvent):
+    print(f"Mesh event: {event.event_type} from {event.source_peer}")
+    # Could feed into agent.perceive() or modulate emotional state
+
+mesh.register_event_handler(on_mesh_event)
+
+# Later: await mesh.send("some-peer", {"type": "status", "curiosity": 0.87})
+```
+
+Real Yggdrasil integration will allow Lyra agents to run on private mesh overlays with end-to-end resilience and privacy — a core part of the Nova ecosystem vision.
 
 ## Contributing
 
